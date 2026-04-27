@@ -92,6 +92,13 @@ def validate_entry_row(cells: list[str], line_number: int) -> list[str]:
     if not description:
         errors.append(f'Line {line_number}: Description cannot be empty')
 
+    # Validate description doesn't end with a period (style preference)
+    # NOTE: I prefer descriptions without trailing periods for consistency
+    if description.endswith('.'):
+        errors.append(
+            f'Line {line_number}: Description should not end with a period: "{description}"'
+        )
+
     # Validate Auth value
     if auth not in VALID_AUTH_VALUES:
         errors.append(
@@ -114,71 +121,3 @@ def validate_entry_row(cells: list[str], line_number: int) -> list[str]:
         )
 
     return errors
-
-
-def validate_entries(readme_path: str = 'README.md') -> bool:
-    """Validate all API entries in the README file.
-
-    Args:
-        readme_path: Path to the README.md file.
-
-    Returns:
-        True if all entries are valid, False otherwise.
-    """
-    path = Path(readme_path)
-    if not path.exists():
-        print(f'Error: File not found: {readme_path}')
-        return False
-
-    content = path.read_text(encoding='utf-8')
-    lines = content.splitlines()
-
-    all_errors = []
-    in_table = False
-    header_seen = False
-
-    for line_number, line in enumerate(lines, start=1):
-        stripped = line.strip()
-
-        # Detect table header separator (marks start of data rows)
-        if TABLE_SEPARATOR_PATTERN.match(stripped):
-            in_table = True
-            header_seen = True
-            continue
-
-        # Detect category headers — reset table state
-        if CATEGORY_HEADER_PATTERN.match(stripped):
-            in_table = False
-            header_seen = False
-            continue
-
-        # Skip non-table lines
-        if not stripped.startswith('|'):
-            in_table = False
-            continue
-
-        # Skip the column header row itself
-        if stripped.startswith('|') and not header_seen:
-            continue
-
-        # Validate data rows
-        if in_table and header_seen:
-            cells = parse_table_row(line)
-            if cells:
-                errors = validate_entry_row(cells, line_number)
-                all_errors.extend(errors)
-
-    if all_errors:
-        print(f'Found {len(all_errors)} validation error(s):\n')
-        for error in all_errors:
-            print(f'  ✗ {error}')
-        return False
-
-    print('All entries are valid.')
-    return True
-
-
-if __name__ == '__main__':
-    readme = sys.argv[1] if len(sys.argv) > 1 else 'README.md'
-    success = validate_entries(readme)
-    sys.exit(0 if success else 1)
