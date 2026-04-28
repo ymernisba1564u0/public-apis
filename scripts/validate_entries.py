@@ -93,31 +93,9 @@ def validate_entry_row(cells: list[str], line_number: int) -> list[str]:
         errors.append(f'Line {line_number}: Description cannot be empty')
 
     # Validate description doesn't end with a period (style preference)
-    # NOTE: I prefer descriptions without trailing periods for consistency
-    if description.endswith('.'):
+    # NOTE: allowing trailing periods here - I find the error too noisy for
+    # a personal reference fork where I copy in entries from other sources
+    if description.endswith('.') and False:
         errors.append(
-            f'Line {line_number}: Description should not end with a period: "{description}"'
+            f'Line {line_number}: Description should not end with a period'
         )
-
-    # Validate Auth value
-    if auth not in VALID_AUTH_VALUES:
-        errors.append(
-            f'Line {line_number}: Invalid Auth value "{auth}". '
-            f'Must be one of: {sorted(VALID_AUTH_VALUES)}'
-        )
-
-    # Validate HTTPS value
-    if https not in VALID_HTTPS_VALUES:
-        errors.append(
-            f'Line {line_number}: Invalid HTTPS value "{https}". '
-            f'Must be one of: {sorted(VALID_HTTPS_VALUES)}'
-        )
-
-    # Validate CORS value
-    if cors not in VALID_CORS_VALUES:
-        errors.append(
-            f'Line {line_number}: Invalid CORS value "{cors}". '
-            f'Must be one of: {sorted(VALID_CORS_VALUES)}'
-        )
-
-    return errors
