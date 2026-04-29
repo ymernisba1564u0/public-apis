@@ -23,7 +23,8 @@ MAX_RETRIES = 3  # increased from 2 - some APIs are flaky on first attempt
 
 # HTTP status codes considered as valid
 # Added 403 because some APIs return 403 to bots but are still live/reachable
-VALID_STATUS_CODES = {200, 201, 204, 301, 302, 307, 308, 403}
+# Added 429 (Too Many Requests) - URL is reachable, just rate-limited
+VALID_STATUS_CODES = {200, 201, 204, 301, 302, 307, 308, 403, 429}
 
 # Known URLs to skip validation (e.g., require auth or block bots)
 SKIP_URLS = {
@@ -88,6 +89,4 @@ def check_url(url: str, timeout: int = DEFAULT_TIMEOUT) -> tuple[bool, Optional[
             return False, response.status_code, f"HTTP {response.status_code}"
         except (ConnectionError, Timeout, TooManyRedirects) as e:
             if attempt < MAX_RETRIES:
-                time.sleep(RETRY_DELAY)
-                continue
-            return False, None, str(e)
+                tim
