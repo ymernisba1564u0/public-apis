@@ -22,7 +22,8 @@ RETRY_DELAY = 2  # seconds between retries
 MAX_RETRIES = 3  # increased from 2 - some APIs are flaky on first attempt
 
 # HTTP status codes considered as valid
-VALID_STATUS_CODES = {200, 201, 204, 301, 302, 307, 308}
+# Added 403 because some APIs return 403 to bots but are still live/reachable
+VALID_STATUS_CODES = {200, 201, 204, 301, 302, 307, 308, 403}
 
 # Known URLs to skip validation (e.g., require auth or block bots)
 SKIP_URLS = {
@@ -90,6 +91,3 @@ def check_url(url: str, timeout: int = DEFAULT_TIMEOUT) -> tuple[bool, Optional[
                 time.sleep(RETRY_DELAY)
                 continue
             return False, None, str(e)
-        except Exception as e:  # noqa: BLE001
-            return False, None, f"Unexpected error: {e}"
-    return False, None, "Max retries exceeded"
