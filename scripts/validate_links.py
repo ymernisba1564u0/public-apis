@@ -19,7 +19,7 @@ README_PATH = "README.md"
 URL_PATTERN = re.compile(r'https?://[^\s\)\]\>"]+', re.IGNORECASE)
 DEFAULT_TIMEOUT = 15  # seconds - increased from 10 to reduce false positives on slow APIs
 RETRY_DELAY = 2  # seconds between retries
-MAX_RETRIES = 2
+MAX_RETRIES = 3  # increased from 2 - some APIs are flaky on first attempt
 
 # HTTP status codes considered as valid
 VALID_STATUS_CODES = {200, 201, 204, 301, 302, 307, 308}
@@ -30,6 +30,7 @@ SKIP_URLS = {
     "https://twitter.com",
     "https://x.com",
     "https://www.facebook.com",  # also blocks bots consistently
+    "https://www.instagram.com",  # blocks bots too
 }
 
 
@@ -92,7 +93,3 @@ def check_url(url: str, timeout: int = DEFAULT_TIMEOUT) -> tuple[bool, Optional[
         except Exception as e:  # noqa: BLE001
             return False, None, f"Unexpected error: {e}"
     return False, None, "Max retries exceeded"
-
-
-def validate_links(filepath: str, verbose: bool = False) -> int:
-    """Validate
