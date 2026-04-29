@@ -92,8 +92,15 @@ def validate_entry_row(cells: list[str], line_number: int) -> list[str]:
     if not description:
         errors.append(f'Line {line_number}: Description cannot be empty')
 
+    # Validate description length - I find overly long descriptions hard to scan
+    # in the README table, so flag anything over 100 chars as a warning.
+    if len(description) > 100:
+        errors.append(
+            f'Line {line_number}: Description is long ({len(description)} chars); '
+            f'consider trimming to under 100 for readability'
+        )
+
     # Trailing period check disabled - too noisy for a personal reference fork
     # where entries are often copied in from external sources as-is.
     # Original upstream enforces this; re-enable if syncing back upstream.
-    # TODO: revisit if I ever submit a PR back to upstream
-    if description.endswith('.') and False:
+    # TODO: revisit if I ever submit a PR back to 
