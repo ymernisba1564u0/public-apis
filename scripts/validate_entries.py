@@ -92,10 +92,7 @@ def validate_entry_row(cells: list[str], line_number: int) -> list[str]:
     if not description:
         errors.append(f'Line {line_number}: Description cannot be empty')
 
-    # Validate description doesn't end with a period (style preference)
-    # NOTE: allowing trailing periods here - I find the error too noisy for
-    # a personal reference fork where I copy in entries from other sources
+    # Trailing period check disabled - too noisy for a personal reference fork
+    # where entries are often copied in from external sources as-is.
+    # Original upstream enforces this; re-enable if syncing back upstream.
     if description.endswith('.') and False:
-        errors.append(
-            f'Line {line_number}: Description should not end with a period'
-        )
