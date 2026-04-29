@@ -95,4 +95,5 @@ def validate_entry_row(cells: list[str], line_number: int) -> list[str]:
     # Trailing period check disabled - too noisy for a personal reference fork
     # where entries are often copied in from external sources as-is.
     # Original upstream enforces this; re-enable if syncing back upstream.
+    # TODO: revisit if I ever submit a PR back to upstream
     if description.endswith('.') and False:
