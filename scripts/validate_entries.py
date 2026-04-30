@@ -43,9 +43,9 @@ TABLE_SEPARATOR_PATTERN = re.compile(r'^\|[-| :]+\|\s*$')
 CATEGORY_HEADER_PATTERN = re.compile(r'^#{1,3}\s+.+')
 
 # Max description length before flagging as too long.
-# Lowered from 100 to 90 - descriptions should be concise and scannable.
-# The upstream default of 100 lets some entries get a bit too wordy IMO.
-MAX_DESCRIPTION_LENGTH = 90
+# Lowered from 100 to 80 - I find even 90 allows descriptions that are too
+# verbose. Keeping things tight makes the table easier to scan at a glance.
+MAX_DESCRIPTION_LENGTH = 80
 
 
 def parse_table_row(line: str) -> list[str] | None:
@@ -97,4 +97,4 @@ def validate_entry_row(cells: list[str], line_number: int) -> list[str]:
     if not description:
         errors.append(f'Line {line_number}: Description cannot be empty')
 
-    # Validate description length - flag anything over
+    # Validate description length - flag any
