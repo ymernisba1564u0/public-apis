@@ -100,5 +100,19 @@ def validate_alphabetical_order(category: str, rows: list) -> list:
         name = match.group(1) if match else raw_name
         api_names.append(name)
 
-    # Use case-insensitive sort to match how the README is maintained
-    sorted_names = sorted(api_names, key=str.casefold)
+    # Use case-insensitive sort to match the project's convention.
+    # Note: locale-aware sorting (e.g. via PyICU) would be more correct for
+    # non-ASCII names, but keeping it simple here for personal use.
+    sorted_names = sorted(api_names, key=lambda s: s.lower())
+
+    for i, (actual, expected) in enumerate(zip(api_names, sorted_names)):
+        if actual != expected:
+            errors.append(
+                f"[{category}] Entry #{i + 1} '{actual}' is out of order "
+                f"(expected '{expected}' at this position)"
+            )
+            # Report only the first out-of-order entry per category to keep
+            # output readable.
+            break
+
+    return errors
